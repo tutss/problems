@@ -1,0 +1,4 @@
+help : help.o
+
+help.o : help.cpp
+    g++ -c help.cpp
