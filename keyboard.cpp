@@ -8,22 +8,24 @@ typedef vector<ll> vll;
 typedef pair<int, int> tupl;
 typedef pair<int, pair<int, int>> tripl;
 
-vector<tupl> adj;
+const int MAX = 29;
 
-int hasCycle(int u, vi &visited, int parent) {
-    cout << "parent " << parent << endl;
-    for (int i = 0; i < int(visited.size()); i++) cout << visited[i] <<" ";
-    cout << endl;
+vi path;
+
+int hasCycle(int u, vi &visited, int parent, vector<set<int>> &adj) {
 
     visited[u] = true;
-    for (auto v : adj[u]) {
-        cout << "v: " << v << endl;
-        cout << "visited v? " << visited[v] << endl;
-        if (!visited[v]) {
-            if (hasCycle(v, visited, u)) {
-                return true;
+    path.push_back(u);
+
+    if (int(adj[u].size()) > 0) {
+        for (auto v : adj[u]) {
+            cout << "\tv: " << v << endl;
+            if (!visited[v]) {
+                if (hasCycle(v, visited, u, adj)) {
+                    return true;
+                }
             } else if (v != parent) {
-                return true;
+                    return true;
             }
         }
     }
@@ -34,53 +36,69 @@ int main() {
     int t;
     scanf("%i", &t);
 
-    for (int test = 0; test < t; test++) {
+    for (int test = 0; test < t; test++) { 
+        
         string s;
         cin >> s;
 
-        // set<int> unique;
-        // for (char c : s) {
-        //     unique.insert(c);
-        // }
-
-        // int unique_count = int(unique.size());
+        string alphabet = "abcdefghijklmnopqrstuvwxyz";
+        vector<set<int>> adj(MAX);
+        cout << "s: " << s << endl;
 
         int n = int(s.size());
+        set<char> unique;
         for (int i = 0; i < n-1; i++) {
-            char a = s[i]; char b = s[i+1];
-            // cout << "s[i]: " << s[i] << endl;
-            // cout << s[i] - 'a' << endl;
-            
-            // else if (i > 0 && i < n-1) {
-            //     adj[s[i]-'a'].insert(s[i+1]-'a');
-            //     adj[s[i]-'a'].insert(s[i-1]-'a');
-            // } else adj[s[i]-'a'].insert(s[i-1]-'a');
+            unique.insert(s[i]);
+            if (!(adj[s[i+1]-'a'].count(s[i]-'a') > 0))
+                adj[s[i]-'a'].insert(s[i+1]-'a');
         }
 
-        for (int i = 0; i < n; i++) {
-            cout << i << ": ";
-            for (auto j : adj[i]) {
-                cout << j << " ";
+        int leaf = s[0]-'a';
+        bool end = false;
+        for (int i = 0; i < MAX; i++)
+        {
+            if (end) break;
+            if (int(adj[i].size()) > 0) {
+                for (auto j : adj[i]) {
+                    if (int(adj[j].size()) == 0) {
+                        leaf = j;
+                        end = true;
+                        break;
+                    }
+                }
             }
-            cout << endl;
         }
         
-        // bool hasCyc = false;
 
-        // vi visited(n);
-        // for (int u = 0; u < n; u++) {
-        //     cout << "u: " << u << endl;
-        //     if (!visited[u]) {
-        //         bool hc = hasCycle(u, visited, -1);
-        //         cout << "hc: " << hc << endl;
-        //         if (hc) {
-        //             printf("NO\n");
-        //             hasCyc = true;
-        //         }
-        //     }
-        // }
-        
+        vi visited(MAX);
+        if (!hasCycle(s[0]-'a', visited, -1, adj)) {
+            cout << "YES\n";
+            
+            for (int i = 0; i < int(path.size()); i++)
+            {
+                printf("%i ", path[i]);
+            }
+
+            cout << endl;
+            
+            
+            // string print = "";
+            // for (char c : unique) {
+            //     print += c;
+            //     alphabet[c-'a'] = 'X';
+            // }
+
+            // printf("%s", print.c_str());
+            // for (char c : alphabet) {
+            //     if (c != 'X') printf("%c", c);
+            // }
+            // printf("\n");
+        } else {
+            cout << "NO\n";
+        }
+
+        path.clear();
+                
     }
-
     
 }

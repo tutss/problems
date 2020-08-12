@@ -4,15 +4,14 @@ using namespace std;
 
 int main() {
 
-    while (true) {
+    int t; scanf("%i", &t);
+    for (int tt = 0; tt < t; tt++) {
         int n; scanf("%i", &n);
-        if (n == 0) break;
         deque<int> q;
 
         int i = 0;
         bool printno = false;
-        while (n != 0)
-        {
+        while (n != 0) {
             int car; scanf("%i", &car);
             car--;
 
@@ -24,7 +23,9 @@ int main() {
 
 
             if (i != car) {
-                if (car > min && !q.empty()) printno = true;
+                if (car > min && !q.empty()) {
+                    printno = true;
+                }
                 min = car;
                 q.push_back(car);
             } else {
